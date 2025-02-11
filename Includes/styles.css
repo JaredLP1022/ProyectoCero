@@ -1,0 +1,73 @@
+label{
+    padding-top: 15px;
+    width: 100%;
+    font-size: 20px;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+}
+.inicioLog{
+    padding-top: 15px;
+    color: white;
+    text-align: center;
+    font-family: 'Times New Roman', Times, serif;
+}
+#boton{
+    margin-top: 20px;
+    width: 100%;
+    font-family: 'Times New Roman', Times, serif;
+}
+input{
+    width: 100%;
+    padding-top: 15px;
+    padding-left: 5%;
+    border-radius: 35px;
+    border: 3px solid white;
+}
+.Piepage{
+    color: white;
+    width: 100%;
+    background-color:rgb(0, 0, 20) ;
+    position: absolute;
+    bottom: 0;
+}
+.heaPage{
+    background-color:rgb(0, 0, 20) ;
+    color: white;
+    border-radius: 1px;
+    border-color: white;
+    border-style: solid;
+    height: 100px;
+}
+.formLog{
+    margin-top: 45px;
+    background-color:rgb(0, 0, 20) ;
+    border-radius: 55px 55px 55px 55px; 
+    border-color: white;
+    border-style: solid;
+    width: 100%;
+    height: 350px;
+    box-shadow: 24px 24px 40px 0 rgb(5, 5, 49);
+}
+
+.tituloHead{
+position: relative;
+padding-top: 20px;
+}
+.menuJared{
+    border-color: white;
+    border-style: solid;
+    background-color:rgb(0, 0, 20);
+    width: 100%;
+    height: 100px;
+    color: aliceblue;
+}
+.registroJ{
+    margin-top: 45px;
+    background-color:rgb(0, 0, 20) ;
+    border-radius: 55px 55px 55px 55px; 
+    border-color: white;
+    border-style: solid;
+    width: 100%;
+    height: 550px;
+    box-shadow: 24px 24px 40px 0 rgb(5, 5, 49);
+}
