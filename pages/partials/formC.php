@@ -118,13 +118,27 @@ $result3 = $query2->fetchAll(PDO::FETCH_ASSOC);
         <div class="col-md-3">
             <div class="form-group">
                 <label for="">Estado:</label>
-                <input class="form-control" type="text" placeholder="estado" name="pais" required>
+                <select class="form-control" name="estado" id="estado">
+                    <option value="">Selecciona un estado</option>
+                    <?php foreach ($result3 as $estado) { ?>
+                        <option value="<?php echo $estado['id']; ?>">
+                            <?php echo $estado['estado']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
                 <label for="">Pais:</label>
-                <input class="form-control" type="text" placeholder="pais" name="pais" required>
+                <select class="form-control" name="pais" id="pais">
+                    <option value="">Selecciona un país</option>
+                    <?php foreach ($result2 as $pais) { ?>
+                        <option value="<?php echo $pais['id']; ?>">
+                            <?php echo $pais['nombre']; ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
         </div>
         <div class="col-md-3">
@@ -142,7 +156,8 @@ $result3 = $query2->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
         <br>
         <div class="container">
-            <button class="btn btn-primary btn-lg w-100" name="save" type="submit" onclick="confirmar()" >Guardar cliente</button>
+            <button class="btn btn-primary btn-lg w-100" name="save" type="submit" onclick="confirmar()">Guardar
+                cliente</button>
         </div>
 
 </form>

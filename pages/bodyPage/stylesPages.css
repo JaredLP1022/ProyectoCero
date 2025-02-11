@@ -82,3 +82,19 @@ input{
     border: 3px solid rgba(0, 0, 20);
     border-radius: .25re
 }
+.btn-delete {
+    display: inline-block;
+    background-color: #d9534f; /* Rojo */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #c9302c; /* Rojo más oscuro al pasar el mouse */
+}
