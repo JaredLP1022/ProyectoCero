@@ -95,9 +95,15 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
 
 </div>
 <hr class="bg-white">
+<!-- Agregar DataTables -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="row py-3">
     <div class="col">
-        <table class="table table-bordered border-white" id="tabla-servicios">
+        <table class="table table-bordered border-white" id="tabla-ventas">
             <thead>
                 <tr>
                     <th class="ColorLetra">Cliente</th>
@@ -119,11 +125,9 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                             <?php
                             $sql = $PDO->query("SELECT nombre FROM cliente WHERE id = $row[id_cliente]");
                             $sql->execute();
-
                             $cliente = $sql->fetchColumn();
-                            echo $cliente
-                                ?>
-
+                            echo $cliente;
+                            ?>
                         </td>
                         <td><?php echo $row['detalle_producto'] ?></td>
                         <td><?php echo $row['cantidad'] ?>pz</td>
@@ -131,13 +135,12 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                         <td>$<?php echo $row['total'] ?></td>
                         <td><?php echo $row['estado'] ?></td>
                         <td><?php echo str_replace('-', '/', date('d-m-y', strtotime($row['fechaV']))) ?></td>
-
                         <td>
-                            <button title="Eliminar"  onclick="location.href='eliminarventa.php?id=<?php echo $row['id_venta'] ?>'"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                    fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
-                                    <path
-                                        d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
-                                </svg></button>
+                            <button title="Eliminar" class="btn-delete" data-id="<?php echo $row['id_venta'] ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
+                                </svg>
+                            </button>
                             <button title="Editar"
                                 onclick="location.href='editarVenta.php?id=<?php echo $row['id_venta'] ?>'"><svg
                                     xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -169,7 +172,6 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
 </svg>
                             </button>
                         </td>
-
                     </tr>
                 <?php } ?>
             </tbody>
@@ -177,6 +179,48 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<br>
+<script>
+    $(document).ready(function () {
+        // Inicializar DataTables
+        $('#tabla-ventas').DataTable({
+            "paging": true,       // Activa paginación
+            "searching": true,    // Activa el buscador
+            "ordering": true,     // Permite ordenar columnas
+            "info": true,         // Muestra información
+            "lengthMenu": [5, 10, 25, 50], // Opciones de cantidad por página
+            "language": {
+                "lengthMenu": "Mostrar _MENU_ registros por página",
+                "zeroRecords": "No se encontraron resultados",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No hay registros disponibles",
+                "infoFiltered": "(filtrado de _MAX_ registros totales)",
+                "search": "Buscar:",
+                "paginate": {
+                    "first": "Primero",
+                    "last": "Último",
+                    "next": "Siguiente",
+                    "previous": "Anterior"
+                }
+            }
+        });
 
-<script src="bodyPage/script.js"></script>
+        // Confirmación antes de eliminar
+        $('.btn-delete').click(function () {
+            var ventaID = $(this).data("id");
+            Swal.fire({
+                title: "¿Estás seguro?",
+                text: "Esta acción no se puede deshacer.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Sí, eliminar",
+                cancelButtonText: "Cancelar"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "eliminarventa.php?id=" + ventaID;
+                }
+            });
+        });
+    });
+</script>

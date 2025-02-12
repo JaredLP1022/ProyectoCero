@@ -121,7 +121,7 @@ $result3 = $query2->fetchAll(PDO::FETCH_ASSOC);
                 <select class="form-control" name="estado" id="estado">
                     <option value="">Selecciona un estado</option>
                     <?php foreach ($result3 as $estado) { ?>
-                        <option value="<?php echo $estado['id']; ?>">
+                        <option value="<?php echo $estado['estado']; ?>">
                             <?php echo $estado['estado']; ?>
                         </option>
                     <?php } ?>
@@ -134,7 +134,7 @@ $result3 = $query2->fetchAll(PDO::FETCH_ASSOC);
                 <select class="form-control" name="pais" id="pais">
                     <option value="">Selecciona un país</option>
                     <?php foreach ($result2 as $pais) { ?>
-                        <option value="<?php echo $pais['id']; ?>">
+                        <option value="<?php echo $pais['nombre']; ?>">
                             <?php echo $pais['nombre']; ?>
                         </option>
                     <?php } ?>
@@ -162,23 +162,23 @@ $result3 = $query2->fetchAll(PDO::FETCH_ASSOC);
 
 </form>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function confirmar() {
-        const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 19000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-                toast.onmouseenter = Swal.stopTimer;
-                toast.onmouseleave = Swal.resumeTimer;
+    $(document).ready(function () {
+        // Validar teléfono antes de enviar
+        $("form").submit(function (event) {
+            var telefono = $("input[name='phone']").val();
+            if (!/^\d{10}$/.test(telefono)) {
+                event.preventDefault();
+                Swal.fire({
+                    title: "Error",
+                    text: "El número de teléfono debe contener exactamente 10 dígitos.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
             }
         });
-        Toast.fire({
-            icon: "success",
-            title: "Usuario Guardado"
-        });
-    }
 
+     
+    });
 </script>

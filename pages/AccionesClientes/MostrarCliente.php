@@ -1,41 +1,106 @@
 <?php
+require 'C:/xampp/htdocs/ProyectoCero/PHPMailer/src/PHPMailer.php';
+require 'C:/xampp/htdocs/ProyectoCero/PHPMailer/src/Exception.php';
+require 'C:/xampp/htdocs/ProyectoCero/PHPMailer/src/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 include("C:/xampp/htdocs/ProyectoCero/config/db.php");
 
 $pdo = new db();
 $PDO = $pdo->conexion();
 
-
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $comando = $PDO->query("SELECT * FROM cliente WHERE id = $id");
-    $comando->execute();
-
-    $result = $comando->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($result AS $row){
-            $nombre = $row["nombre"];
-            $email = $row["email"];
-            $telefono = $row["telefono"];
-            $direccion = $row["direccion"];
-            $fecha_registro = $row["fechaR"];
-            $fecha_modificacion = $row["fechaM"];
-        }
-    
+if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+    die("Acceso no autorizado.");
 }
 
-if (isset($_POST['update'])) {
-    $id = $_GET['id'];
-    $nombre = $_POST['nombre'];
-    $email = $_POST['email'];
-    $telefono = $_POST['phone'];
-    $direccion = $_POST['direccion'];
-    $fecha_registro = $_POST['fecha_registro'];
-    $fecha_modificacion = $_POST['fecha_modificacion'];
+$id = (int) $_GET['id']; // Convertir a entero para evitar inyecciones SQL
 
-    $comando = $PDO->query("UPDATE cliente set nombre = '$nombre', email = '$email', telefono = '$telefono', direccion = '$direccion', fechaR = '$fecha_registro', fechaM = '$fecha_modificacion' WHERE id = $id");
-    $comando->execute();
+try {
+    // Obtener datos del cliente de forma segura
+    $comando = $PDO->prepare("SELECT * FROM cliente WHERE id = ?");
+    $comando->execute([$id]);
+    $cliente = $comando->fetch(PDO::FETCH_ASSOC);
 
-    header("Location: Clientes.php");
+    if (!$cliente) {
+        die("Cliente no encontrado.");
+    }
 
+    $nombre = htmlspecialchars($cliente["nombre"]);
+    $email = htmlspecialchars($cliente["email"]);
+    $telefono = htmlspecialchars($cliente["telefono"]);
+    $direccion = htmlspecialchars($cliente["direccion"]);
+    $fecha_registro = htmlspecialchars($cliente["fechaR"]);
+    $fecha_modificacion = htmlspecialchars($cliente["fechaM"]);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
+        // Validar datos antes de guardarlos
+        $nombre = htmlspecialchars(trim($_POST['nombre']));
+        $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
+        $telefono = preg_replace('/\D/', '', $_POST['phone']); // Solo números
+        $direccion = htmlspecialchars(trim($_POST['direccion']));
+        $fecha_registro = date("Y-m-d", strtotime($_POST['fecha_registro'])); // Guardar en formato SQL
+        $fecha_modificacion = date("Y-m-d"); // Fecha actual en formato SQL
+
+        if (!preg_match('/^[0-9]{10}$/', $telefono)) {
+            die("Error: El número de teléfono debe tener 10 dígitos.");
+        }
+
+        // Actualizar los datos de manera segura
+        $update = $PDO->prepare("UPDATE cliente SET nombre = ?, email = ?, telefono = ?, direccion = ?, fechaR = ?, fechaM = ? WHERE id = ?");
+        $resultado = $update->execute([$nombre, $email, $telefono, $direccion, $fecha_registro, $fecha_modificacion, $id]);
+
+        if ($resultado) {
+            $fecha_registro_local = date("d/m/Y", strtotime($fecha_registro));
+            $fecha_modificacion_local = date("d/m/Y", strtotime($fecha_modificacion));
+
+
+            // Enviar correo de confirmación
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host = 'smtp.gmail.com';
+                $mail->SMTPAuth = true;
+                $mail->Username = 'eduarposeros@gmail.com'; // Tu correo Gmail
+                $mail->Password = 'gsvr opmn ipug xnoj'; // Tu contraseña o contraseña de aplicación
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                $mail->Port = 587;
+
+               // Configurar UTF-8 para los caracteres especiales
+               $mail->CharSet = 'UTF-8';
+
+               // Remitente y destinatario
+               $mail->setFrom('eduarposeros@gmail.com', 'HorizonTech');
+               $mail->addAddress($email, $nombreC);
+
+                $mail->isHTML(true);
+                $mail->Subject = 'Actualización de Datos';
+                $mail->Body = "
+                    <h3>¡Hola, $nombre!</h3>
+                    <p>Tus datos han sido actualizados en nuestro sistema.</p>
+                    <p><strong>Teléfono:</strong> $telefono</p>
+                    <p><strong>Dirección:</strong> $direccion</p>
+                    <p><strong>Fecha de Registro:</strong> $fecha_registro</p>
+                    <p><strong>Última Modificación:</strong> $fecha_modificacion</p>
+                    <br>
+                    <p>Si no realizaste esta actualización, por favor contáctanos.</p>
+                    <p>Gracias.</p>
+                ";
+
+                $mail->send();
+            } catch (Exception $e) {
+                error_log("Error al enviar correo: " . $mail->ErrorInfo);
+            }
+
+            header("Location: Clientes.php");
+            exit();
+        } else {
+            die("Error al actualizar los datos.");
+        }
+    }
+} catch (Exception $e) {
+    die("Error en la consulta: " . $e->getMessage());
 }
 ?>
 <div class="contenedorPanel">
@@ -114,4 +179,3 @@ if (isset($_POST['update'])) {
         <button class="btn btn-primary btn-lg w-100" type="submit" name="update">Guardar cliente</button>
     </div>
 </form>
-
