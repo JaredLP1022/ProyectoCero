@@ -27,12 +27,13 @@ try {
         die("Cliente no encontrado.");
     }
 
+    // Asignar datos al cliente
     $nombre = htmlspecialchars($cliente["nombre"]);
     $email = htmlspecialchars($cliente["email"]);
     $telefono = htmlspecialchars($cliente["telefono"]);
     $direccion = htmlspecialchars($cliente["direccion"]);
-    $fecha_registro = htmlspecialchars($cliente["fechaR"]);
-    $fecha_modificacion = htmlspecialchars($cliente["fechaM"]);
+    $fecha_registro = date("d/m/Y", strtotime($cliente["fechaR"])); // Formato de fecha local
+    $fecha_modificacion = date("Y-m-d"); // Fecha actual en formato SQL para la actualización
 
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['update'])) {
         // Validar datos antes de guardarlos
@@ -40,22 +41,19 @@ try {
         $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
         $telefono = preg_replace('/\D/', '', $_POST['phone']); // Solo números
         $direccion = htmlspecialchars(trim($_POST['direccion']));
-        $fecha_registro = date("Y-m-d", strtotime($_POST['fecha_registro'])); // Guardar en formato SQL
-        $fecha_modificacion = date("Y-m-d"); // Fecha actual en formato SQL
+        $fecha_registro = $_POST['fecha_registro']; // No debe cambiarse
+        $fecha_modificacion = date("Y-m-d"); // Se mantiene la fecha de modificación como hoy
 
+        // Validar el número de teléfono
         if (!preg_match('/^[0-9]{10}$/', $telefono)) {
             die("Error: El número de teléfono debe tener 10 dígitos.");
         }
 
-        // Actualizar los datos de manera segura
-        $update = $PDO->prepare("UPDATE cliente SET nombre = ?, email = ?, telefono = ?, direccion = ?, fechaR = ?, fechaM = ? WHERE id = ?");
-        $resultado = $update->execute([$nombre, $email, $telefono, $direccion, $fecha_registro, $fecha_modificacion, $id]);
+        // Preparar la consulta de actualización
+        $update = $PDO->prepare("UPDATE cliente SET nombre = ?, email = ?, telefono = ?, direccion = ?, fechaM = ? WHERE id = ?");
+        $resultado = $update->execute([$nombre, $email, $telefono, $direccion, $fecha_modificacion, $id]);
 
         if ($resultado) {
-            $fecha_registro_local = date("d/m/Y", strtotime($fecha_registro));
-            $fecha_modificacion_local = date("d/m/Y", strtotime($fecha_modificacion));
-
-
             // Enviar correo de confirmación
             $mail = new PHPMailer(true);
             try {
@@ -67,12 +65,12 @@ try {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-               // Configurar UTF-8 para los caracteres especiales
-               $mail->CharSet = 'UTF-8';
+                // Configurar UTF-8 para los caracteres especiales
+                $mail->CharSet = 'UTF-8';
 
-               // Remitente y destinatario
-               $mail->setFrom('eduarposeros@gmail.com', 'HorizonTech');
-               $mail->addAddress($email, $nombreC);
+                // Remitente y destinatario
+                $mail->setFrom('eduarposeros@gmail.com', 'HorizonTech');
+                $mail->addAddress($email, $nombre);
 
                 $mail->isHTML(true);
                 $mail->Subject = 'Actualización de Datos';
@@ -93,86 +91,97 @@ try {
                 error_log("Error al enviar correo: " . $mail->ErrorInfo);
             }
 
-            header("Location: Clientes.php");
+            // Alerta exitosa y redirección
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script>
+                Swal.fire({
+                    title: '¡Cliente Modificado!',
+                    text: 'Los datos del cliente se actualizaron correctamente.',
+                    icon: 'success',
+                    confirmButtonText: 'Aceptar'
+                }).then(() => {
+                    window.location.href = 'clientes.php';
+                });
+            </script>";
             exit();
         } else {
-            die("Error al actualizar los datos.");
+            echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+            echo "<script>
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Hubo un problema al actualizar los datos.',
+                    icon: 'error',
+                    confirmButtonText: 'Intentar de nuevo'
+                });
+            </script>";
+            exit();
         }
     }
 } catch (Exception $e) {
     die("Error en la consulta: " . $e->getMessage());
 }
 ?>
+
+<!-- Formulario para editar cliente -->
 <div class="contenedorPanel">
     <div class="botonCss">
-        <button class=" border-white botonCerrar ColorLetra" type="submit" onclick="location.href='clientes.php'">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                class="bi bi-caret-left-fill" viewBox="0 0 16 16">
-                <path
-                    d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z" />
-            </svg>
+        <button class="border-white botonCerrar ColorLetra" type="button" onclick="location.href='clientes.php'">
+            🏠 Volver a Clientes
         </button>
     </div>
     <div class="tituloCss">
         <h4 class="text-center ColorLetra">Editar Cliente</h4>
     </div>
-    <div class="botonCss">
-        <button class=" border-white botonCerrar ColorLetra" type="submit"
-            onclick="location.href='Panel-Administrador.php'">Panel<svg xmlns="http://www.w3.org/2000/svg" width="16"
-                height="16" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
-                <path
-                    d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z" />
-            </svg></button>
-    </div>
-
 </div>
+
 <hr class="bg-white">
 <form action="editarcliente.php?id=<?php echo $_GET['id']; ?>" method="POST">
     <p>Datos Personales:</p>
     <div class="form-row row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="">Nombre:</label>
-                <input class="form-control" type="text" value="<?php echo $nombre; ?>" name="nombre">
+                <label for="nombre">Nombre:</label>
+                <input class="form-control" type="text" value="<?php echo $nombre; ?>" name="nombre" required>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="">Correo electronico:</label>
-                <input class="form-control" type="email" value="<?php echo $email; ?> " name="email">
+                <label for="email">Correo electrónico:</label>
+                <input class="form-control" type="email" value="<?php echo $email; ?>" name="email" required>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
-                <label for="">Numero de telefono:</label>
-                <input class="form-control" type="phone" value="<?php echo $telefono; ?>" name="phone">
+                <label for="phone">Número de teléfono:</label>
+                <input class="form-control" type="tel" value="<?php echo $telefono; ?>" name="phone" 
+                       pattern="[0-9]{10}" maxlength="10" required
+                       title="El número de teléfono debe tener exactamente 10 dígitos numéricos.">
             </div>
         </div>
     </div>
-    <br>
+
     <hr class="bg-white">
-    <p>Direccion:</p>
+    <p>Dirección:</p>
     <div class="form-row row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="">Nombre de la calle:</label>
-                <input class="form-control" type="text" value="<?php echo $direccion; ?> " name="direccion">
+                <label for="direccion">Dirección:</label>
+                <input class="form-control" type="text" value="<?php echo $direccion; ?>" name="direccion" required>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="">Fecha de registro:</label>
-                <input class="form-control" type="date" value="<?php echo $fecha_registro; ?>" name="fecha_registro">
+                <label for="fecha_registro">Fecha de Registro:</label>
+                <input class="form-control" type="text" value="<?php echo $fecha_registro; ?>" name="fecha_registro" readonly>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <label for="">Fecha de actualizacion:</label>
-                <input class="form-control" type="date" value="<?php echo $fecha_modificacion; ?>"
-                    name="fecha_modificacion">
+                <label for="fecha_modificacion">Última Modificación:</label>
+                <input class="form-control" type="text" value="<?php echo $fecha_modificacion; ?>" name="fecha_modificacion" readonly>
             </div>
         </div>
-    </div><br>
+    </div>
 
     <br>
     <div class="container">
