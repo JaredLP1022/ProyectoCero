@@ -126,7 +126,7 @@ if (ob_get_length()) { ob_end_clean(); }
             confirmButtonText: "OK"
         }).then(() => {
             <?php if ($tipo == 'success') { ?>
-                window.location.href = '../clientes.php'; // Redirigir a clientes.php si fue exitoso
+                window.location.href = '../Clientes.php'; // Redirigir a clientes.php si fue exitoso
             <?php } else { ?>
                 window.history.back(); // Volver atrás si hubo un error
             <?php } ?>

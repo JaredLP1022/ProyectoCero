@@ -141,7 +141,7 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0" />
                                 </svg>
                             </button>
-                            <button title="Editar"
+                            <button title="Editar" class="btn-primary"
                                 onclick="location.href='editarVenta.php?id=<?php echo $row['id_venta'] ?>'"><svg
                                     xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -150,14 +150,14 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                                     <path fill-rule="evenodd"
                                         d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z" />
                                 </svg></button>
-                            <button title="Archivar" class=" " onclick="location.href='ArchivarVenta.php?id=<?php echo $row['id_venta'] ?>'">
+                            <button title="Archivar" class="btn-info " onclick="location.href='ArchivarVenta.php?id=<?php echo $row['id_venta'] ?>'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-archive" viewBox="0 0 16 16">
                                     <path
                                         d="M0 2a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1v7.5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 12.5V5a1 1 0 0 1-1-1zm2 3v7.5A1.5 1.5 0 0 0 3.5 14h9a1.5 1.5 0 0 0 1.5-1.5V5zm13-3H1v2h14zM5 7.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5" />
                                 </svg>
                             </button>
-                            <button title="ticket" onclick="location.href='Factura.php?id=<?php echo $row['id_venta'] ?>'">
+                            <button title="ticket" class="btn-warning" onclick="location.href='Factura.php?id=<?php echo $row['id_venta'] ?>'">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                     class="bi bi-printer-fill" viewBox="0 0 16 16">
                                     <path
@@ -166,7 +166,7 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                                         d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1" />
                                 </svg>
                             </button>
-                            <button title="Completar Venta" onclick="location.href='CompletarVenta.php?id=<?php echo $row['id_venta'] ?>'">
+                            <button title="Completar Venta" class="btn-success" onclick="location.href='CompletarVenta.php?id=<?php echo $row['id_venta'] ?>'">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
   <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
 </svg>

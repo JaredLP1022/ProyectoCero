@@ -1,3 +1,26 @@
+<?php
+include("C:/xampp/htdocs/ProyectoCero/config/db.php");
+
+$pdo = new db();
+$PDO = $pdo->conexion();
+
+// Obtener los clientes
+$clientes = $PDO->query("SELECT id, nombre FROM cliente WHERE estado = 'Activo'");
+$clientes->execute();
+$clientes = $clientes->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener los productos de la base de datos
+$productos = $PDO->query("SELECT id, description, price FROM producto");
+$productos->execute();
+$productos = $productos->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener los productos de la base de datos
+$descuento = $PDO->query("SELECT *  FROM descuento");
+$descuento->execute();
+$descuento = $descuento->fetchAll(PDO::FETCH_ASSOC);
+
+?>
+
 <div class="contenedorPanel">
     <div class="botonCss">
         <button title="Volver" class=" border-white botonCerrar ColorLetra" type="submit"
@@ -25,11 +48,18 @@
 <hr class="bg-white">
 <form action="AccionesClientes/GuardarVenta.php" method="POST" >
     <p>Datos Asociar cliente:</p>
-     <div class="form-row row">
+    <div class="form-row row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="">ID cliente:</label>
-                <input class="form-control" type="number" name="cliente_id" required>
+                <label for="">Cliente:</label>
+                <select class="form-control" name="cliente_id" required>
+                    <option value="">Selecciona un cliente</option>
+                    <?php foreach ($clientes as $cliente): ?>
+                        <option value="<?php echo $cliente['id']; ?>">
+                            <?php echo $cliente['nombre']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
 
@@ -46,37 +76,60 @@
         <div class="col-md-12">
             <div class="form-group">
                 <label for="">Detalle de los productos o Servicios:</label>
-                <input class="form-control" type="text"  name="detalles_producto" required>
+                <select class="form-control" name="detalle_producto" id="producto_id" required>
+                    <option value="">Selecciona un producto</option>
+                    <?php foreach ($productos as $producto): ?>
+                        <option value="<?php echo $producto['description']; ?>" data-precio="<?php echo $producto['price']; ?>">
+                            <?php echo $producto['description']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
-        
     </div>
     <br>
     <div class="form-row row">
         <div class="col-md-4">
             <div class="form-group">
                 <label for="">Cantidad</label>
-                <input class="form-control" type="number"  name="cantidad" required>
+                <input class="form-control" type="number" name="cantidad" required>
             </div>
         </div>
         <div class="col-md-4">
             <div class="form-group">
                 <label for="">Precio Unitario:</label>
-                <input class="form-control" type="float"  name="precio_unitario" required>
+                <input class="form-control" type="number" id="precio_unitario" name="precio_unitario" readonly required>
             </div>
         </div>
         <div class="col-md-4">
-            <div class="form-group">
-                <label for="">Descuento:</label>
-               <input class="form-control" type="float" name="descuento" required>
+        <div class="form-group">
+                <label for="">Detalle del desceunto:</label>
+                <select class="form-control" name="descuento" id="descuento" required>
+                    <option value="">Deuento para la venta</option>
+                    <?php foreach ($descuento as $descuentos): ?>
+                        <option value="<?php echo $descuentos['descuento_porcentaje']; ?>">
+                            <?php echo $descuentos['descuento_porcentaje']; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
             </div>
         </div>
-        
     </div>
     <hr class="bg-white">
    
-        <div class="container">
-            <button class="btn btn-primary btn-lg w-100" type="submit" name="save">Guardar Venta</button>
-        </div>
+    <div class="container">
+        <button class="btn btn-primary btn-lg w-100" type="submit" name="save">Guardar Venta</button>
+    </div>
 
 </form>
+
+<script>
+document.getElementById('producto_id').addEventListener('change', function () {
+    // Obtener el precio del producto seleccionado
+    var selectedOption = this.options[this.selectedIndex];
+    var precio = selectedOption.getAttribute('data-precio');
+
+    // Establecer el precio en el campo "Precio Unitario"
+    document.getElementById('precio_unitario').value = precio;
+});
+</script>
