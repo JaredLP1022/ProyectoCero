@@ -58,12 +58,12 @@
         <div class="card bg-transparent border-white">
 
             <div class="card-body">
-                <h5 class="card-title ColorLetra">Reportes</h5>
+                <h5 class="card-title ColorLetra">Soporte y Atención al Cliente</h5>
                 <div class="card-body ColorLetra">
                 <div class="card-body ColorLetra">
-                   <p>Anilisis de datos y reportes</p>
+                   <p>Soporte y Atención al Cliente</p>
                    <button class="btn btn-secondary btn-lg w-100 border-white" type="submit"
-                        onclick="location.href='clientes.php'">Ir Analisis y reporte</button>
+                        onclick="location.href='Tickets.php'">Soporte y Atención al Cliente</button>
                 </div>
                 </div>
             </div>
