@@ -14,5 +14,5 @@
 </div>
 
 <?php
-    include("./bodyPage/FooterPages.php");
+    include("./bodyPage/footerAdmin.php");
 ?>

@@ -8,6 +8,13 @@ $PDO = $pdo->conexion();
 $queryVentas = $PDO->query("SELECT v.id_venta, c.nombre AS cliente, v.detalle_producto FROM venta v INNER JOIN cliente c ON v.id_cliente = c.id");
 $queryVentas->execute();
 $ventas = $queryVentas->fetchAll(PDO::FETCH_ASSOC);
+
+// Obtener todos los problemas
+$query_problemas = "SELECT id_problema, descripcionProblem FROM problema";
+$stmt_problemas = $PDO->prepare($query_problemas);
+$stmt_problemas->execute();
+$problemas = $stmt_problemas->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 
@@ -59,7 +66,14 @@ $ventas = $queryVentas->fetchAll(PDO::FETCH_ASSOC);
         <div class="col-md-12">
             <div class="form-group">
                 <label for="descripcion">Descripción del Problema:</label>
-                <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+                <select class="form-control" name="descripcionProblema" id="descripcionProblema">
+
+                            <?php foreach ($problemas as $problema): ?>
+                                <option value="<?php echo $problema['id_problema']; ?>">
+                                    <?php echo htmlspecialchars($problema['descripcionProblem']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
             </div>
         </div>
     </div>

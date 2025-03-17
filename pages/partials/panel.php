@@ -1,3 +1,17 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if (isset($_GET['success'])): ?>
+    <script>
+        Swal.fire({
+            icon: "success",
+            title: "¡Registro exitoso!",
+            text: "El usuario ha sido creado correctamente.",
+            confirmButtonText: "Aceptar"
+        });
+    </script>
+<?php endif; ?>
+
+
 <div class="contenedorPanel">
     <div class="tituloCss" >
     <h4 class="text-center ColorLetra">Panel Administrador</h4>
@@ -47,8 +61,8 @@
                 <h5 class="card-title ColorLetra">Catalgo de Prodcutos</h5>
                 <div class="card-body ColorLetra">
                 <div class="card-body ColorLetra">
-                   <p>Soporte y atencion al cliente</p>
-                   <button class="btn btn-secondary btn-lg w-100 border-white" type="submit"onclick="location.href='ProductosVista.php'">Soporte y atencion al cliente</button>
+                   <p>Se muestran los productos y servicios</p>
+                   <button class="btn btn-secondary btn-lg w-100 border-white" type="submit"onclick="location.href='ProductosVista.php'">Productos</button>
                 </div>
                 </div>
             </div>
@@ -73,12 +87,12 @@
         <div class="card bg-transparent border-white">
 
             <div class="card-body">
-                <h5 class="card-title ColorLetra">Sistema de ventas</h5>
+                <h5 class="card-title ColorLetra">”Análisis de Datos y Reportes</h5>
                 <div class="card-body ColorLetra">
                 <div class="card-body ColorLetra">
-                   <p>Administracion del sistema Ventas</p>
+                   <p>Análisis de Datos y Reportes</p>
                    <button class="btn btn-secondary btn-lg w-100 border-white" type="submit"
-                        onclick="location.href='clientes.php'">Ir Administracion del sistema</button>
+                        onclick="location.href='PanelAnalisisDatos.php'">”Análisis de Datos y Reportes</button>
                 </div>
                 </div>
             </div>
@@ -87,12 +101,12 @@
     <div class="col">
         <div class="card bg-transparent border-white">
             <div class="card-body">
-                <h5 class="card-title ColorLetra">Mantenimiento</h5>
+                <h5 class="card-title ColorLetra">Agregar Usuarios</h5>
                 <div class="card-body ColorLetra">
                 <div class="card-body ColorLetra">
-                   <p>Mantenimiento de Ventas</p>
+                   <p>Se agregaran usuarios con roles menores </p>
                    <button class="btn btn-secondary btn-lg w-100 border-white" type="submit"
-                        onclick="location.href='clientes.php'">Mantenimiento</button>
+                        onclick="location.href='../registroAdmin.php'">Agregar Usuario</button>
                 </div>
                 </div>
             </div>

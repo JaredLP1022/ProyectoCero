@@ -6,11 +6,17 @@ $PDO = $pdo->conexion();
 
 // Verificar si se envió el formulario correctamente
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_venta = $_POST["id_venta"];
-    $descripcion = trim($_POST["descripcion"]);
+    // Obtener datos del formulario
+    $id_venta = $_POST["id_venta"] ?? null;
+    $descripcion = trim($_POST["descripcionProblema"] ?? ""); // CORREGIDO
     $fecha = date("Y-m-d"); // Fecha actual
-    $prioridad = $_POST["prioridad"];
-    $estado = $_POST["estado"];
+    $prioridad = $_POST["prioridad"] ?? null;
+    $estado = $_POST["estado"] ?? null;
+
+    // Validar que no haya campos vacíos
+    if (empty($id_venta) || empty($descripcion) || empty($prioridad) || empty($estado)) {
+        die("Error: Todos los campos son obligatorios.");
+    }
 
     try {
         // Insertar el ticket en la base de datos
@@ -19,12 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $PDO->prepare($query);
         $stmt->execute([$id_venta, $descripcion, $fecha, $prioridad, $estado]);
 
-        // ✅ Redirigir a tickets.php con un parámetro de éxito
+        // ✅ Redirigir a tickets.php con éxito
         header("Location: tickets.php?success=1");
         exit();
     } catch (PDOException $e) {
-        // ✅ Redirigir a tickets.php con un parámetro de error
-        header("Location: tickets.php?error=1");
+        // ✅ Mostrar error antes de redirigir
+        echo "Error SQL: " . $e->getMessage();
         exit();
     }
 } else {

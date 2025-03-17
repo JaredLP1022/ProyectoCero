@@ -3,19 +3,16 @@
 ?>
 <?php
     include("./bodyPage/HeaderPages.php");
-   
     if(empty($_SESSION['username'])){
         header("Location:../index.php");
-        exit;
     }
-    
 ?>
 <div class="container mt-5">
 <?php
-    include("./partials/panel.php");
+    include("./partials/TablaTicketsArchivados.php");
 ?>
 </div>
 
 <?php
-    include("./bodyPage/Footerpages.php");
+    include("./bodyPage/footerAdmin.php");
 ?>

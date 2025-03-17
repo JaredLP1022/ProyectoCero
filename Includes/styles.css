@@ -71,3 +71,19 @@ padding-top: 20px;
     height: 550px;
     box-shadow: 24px 24px 40px 0 rgb(5, 5, 49);
 }
+.ColorLetra{
+    color: rgb(0, 0, 20) ;
+}
+
+.contenedorPanel{
+   width: 100%;
+}
+.botonCss{
+    display: inline-block;
+    width: 10%;
+
+}
+.tituloCss{
+    display: inline-block;
+    width: 90%;
+}

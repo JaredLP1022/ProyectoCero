@@ -12,10 +12,11 @@
 ?>
 <div class="container mt-5">
 <?php
-    include("./partials/panel.php");
+    include("./partials/ReporteVentasMensuales.php");
 ?>
 </div>
-
+<br>
 <?php
-    include("./bodyPage/Footerpages.php");
+
+    include("./bodyPage/FooterPages.php");
 ?>
