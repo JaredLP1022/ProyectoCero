@@ -1,7 +1,7 @@
-<footer  class=" Piepage ">
+<footer  class="Piepage ">
     <div class="container pt-2">
         <p>DERECHOS RESERVADOS 2024</p>
-        <div class="container flex-box">
+        <div class="container row">
             <div class="container">
                 Calle Cholula #89 Fraccionamiento Argos Xalapa Veracruz
             </div>

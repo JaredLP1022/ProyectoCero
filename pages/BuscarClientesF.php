@@ -12,7 +12,7 @@
 ?>
 <div class="container mt-5">
 <?php
-    include("./partials/ReporteST.php");
+    include("./partials/clientesFechaR.php");
 ?>
 </div>
 <br>

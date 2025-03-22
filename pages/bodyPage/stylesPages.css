@@ -11,18 +11,23 @@
     font-family: 'Times New Roman', Times, serif;
 }
 
-.Piepage{
+/* Estilos generales para el contenido */
+body {
+    margin-bottom: 150px; /* Asegura que el contenido no quede detrás del pie de página */
+}
+
+/* Estilo para el pie de página fijo */
+.Piepage {
     color: white;
     width: 100%;
-    background-color:rgb(0, 0, 20) ;
-    position: absolute;
+    background-color: rgb(0, 0, 20);
+    position: fixed; /* Fijo en la parte inferior */
     bottom: 0;
+    padding: 10px 0; /* Puedes ajustar el padding para mayor altura */
+    text-align: center; /* Centrar el texto */
+    z-index: 100; /* Para que esté siempre por encima del contenido */
 }
-.PieAdmin{
-    color: white;
-    width: 100%;
-    background-color:rgb(0, 0, 20) ;
-}
+
 .heaPage{
     background-color:rgb(0, 0, 20) ;
     color: white;

@@ -58,7 +58,7 @@
                         desempeño del equipo de
                         soporte.</p>
                     <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                        onclick="location.href='ReporteSoporteT.php'">Ir a Ventas</button>
+                        onclick="location.href='ReporteSoporteT.php'">Reporte Soporte Tecnico</button>
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
                             vendidos y tomar
                             decisiones estratégica</p>
                         <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='ProductosVista.php'">Productos</button>
+                            onclick="location.href='ventaProductos.php'">Estadiscas de productos y servicios</button>
                     </div>
                 </div>
             </div>
@@ -98,7 +98,7 @@
                             compartirlo fácilmente con
                             otros departamentos.</p>
                         <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='clientes.php'">”Análisis de Datos y Reportes</button>
+                            onclick="location.href='ReporteClientesR.php'">”Análisis de Datos y Reportes</button>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                             región, para analizar la distribución geográfica de
                             la base de clientes </p>
                         <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='../registroAdmin.php'">Agregar Usuario</button>
+                            onclick="location.href='BuscarClientesF.php'">Agregar Usuario</button>
                     </div>
                 </div>
             </div>
