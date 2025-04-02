@@ -1,5 +1,5 @@
 <?php
-    include("./bodyPage/HeadPages.php");
+include("./bodyPage/HeadPages.php");
 
 if ($_SESSION['rol'] != 'Ventas' && $_SESSION['rol'] != 'Administrador') {
     header("Location: access_denied.php");
@@ -20,7 +20,7 @@ if ($_SESSION['rol'] != 'Ventas' && $_SESSION['rol'] != 'Administrador') {
 ?>
 <div class="container mt-5">
 <?php
-    include("./partials/TablaVentas.php");
+    include("./partials/buscarReporteCliente.php");
 ?>
 </div>
 

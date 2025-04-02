@@ -1,3 +1,8 @@
+<?php
+
+$rol = $_SESSION['rol']; // Asegúrate de que la sesión tiene este valor
+?>
+
 <div class="contenedorPanel">
     <div class="botonCss">
         <button title="Volver" class=" border-white botonCerrar ColorLetra" type="submit"
@@ -25,6 +30,8 @@
 <hr class="bg-white">
 <br>
 <div class="row row-cols-3 row-cols-md-3 g-4">
+
+
     <div class="col">
         <div class="card bg-transparent border-white h-100">
             <div class="card-body">
@@ -44,6 +51,7 @@
             </div>
         </div>
     </div>
+
     <div class="col">
         <div class="card bg-transparent border-white h-100">
             <div class="card-body">
@@ -124,65 +132,22 @@
         </div>
     </div>
 
+    <?php if ($rol == 'soporte' || $rol == 'ventas'): ?>
     <div class="col">
         <div class="card bg-transparent border-white h-100">
             <div class="card-body">
-                <h5 class="card-title ColorLetra">Exportar reporte de ingresos por producto en Exce</h5>
+                <h5 class="card-title ColorLetra">Peticiones Usuarios</h5>
                 <div class="card-body ColorLetra">
                     <div class="card-body ColorLetra">
-                        <p>Como Administrador,
-                            quiero poder exportar un
-                            reporte de ingresos
-                            generados por cada
-                            producto en formato
-                            Excel, para facilitar el
-                            análisis financiero </p>
+                        <p>Como usuarios que no son administradores y que solo tienen acceso a su area y necesitan un archivo de otro departamento se envia una peticion al admnistrador que despues de evaluar daraa su respues</p>
                         <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='../registroAdmin.php'">Agregar Usuario</button>
+                            onclick="location.href='peticionesAdmin.php'">Crear peticion</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col">
-        <div class="card bg-transparent border-white h-100">
-            <div class="card-body">
-                <h5 class="card-title ColorLetra">Generar reporte de clientes por fecha de registro</h5>
-                <div class="card-body ColorLetra">
-                    <div class="card-body ColorLetra">
-                        <p>Como Usuario de Ventas,
-                            quiero poder generar un
-                            reporte de clientes
-                            clasificados por fecha de
-                            registro, para analizar el
-                            crecimiento de la base de
-                            clientes.
-                        </p>
-                        <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='../registroAdmin.php'">Agregar Usuario</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col">
-        <div class="card bg-transparent border-white h-100">
-            <div class="card-body">
-                <h5 class="card-title ColorLetra">Visualizar estadísticas de ventas por región</h5>
-                <div class="card-body ColorLetra">
-                    <div class="card-body ColorLetra">
-                        <p>Como Administrador,
-                            quiero poder visualizar
-                            estadísticas de ventas
-                            clasificadas por región,
-                            para identificar las áreas
-                            geográficas con mejor
-                            rendimiento.</p>
-                        <button class="btn btn-secondary btn-lg w-100 border-white ColorLetra" type="submit"
-                            onclick="location.href='../registroAdmin.php'">Agregar Usuario</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+   </div>
+   <?php endif; ?>
+
+ 

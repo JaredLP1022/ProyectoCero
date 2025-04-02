@@ -1,15 +1,18 @@
 <?php
     include("./bodyPage/HeadPages.php");
+
+if ($_SESSION['rol'] != 'Administrador') {
+    header("Location: access_denied.php");
+    exit;
+}
 ?>
+
 <?php
     include("./bodyPage/HeaderPages.php");
-    if(empty($_SESSION['username'])){
-        header("Location:../index.php");
-    }
 ?>
 <div class="container mt-5">
 <?php
-    include("./partials/TablaTickets.php");
+    include("guardarClaveMaestra.php");
 ?>
 </div>
 

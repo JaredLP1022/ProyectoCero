@@ -14,7 +14,6 @@ $PDO = $pdo->conexion();
 
 // Iniciar buffer de salida
 ob_start();
-
 // Inicializar mensaje y tipo para evitar errores si no hay POST
 $mensaje = "";
 $tipo = "error";

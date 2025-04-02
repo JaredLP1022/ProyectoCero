@@ -1,3 +1,24 @@
+<?php if (isset($_GET['mensaje'])): ?>
+    <script>
+        // Verifica si el mensaje es de éxito o error
+        var mensaje = "<?php echo $_GET['mensaje']; ?>";
+        if (mensaje === "success") {
+            Swal.fire({
+                title: '¡Éxito!',
+                text: 'El reporte se generó correctamente.',
+                icon: 'success',
+                confirmButtonText: 'Aceptar'
+            });
+        } else if (mensaje === "error") {
+            Swal.fire({
+                title: '¡Error!',
+                text: 'No se encontraron resultados para el reporte.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
+    </script>
+<?php endif; ?>
 
 <div class="contenedorPanel">
     <div class="botonCss">

@@ -17,5 +17,5 @@ include('partials/Header.php');
         ?>
 </div>
 <?php
-include('partials/Footer.php');
+include('pages/bodyPage/FooterPages.php');
 ?>

@@ -7,11 +7,13 @@
         header("Location:../index.php");
     }
 ?>
+<main>
 <div class="container mt-5">
 <?php
-    include("./partials/TablaTickets.php");
+    include("./partials/formAcDes.php");
 ?>
 </div>
+</main>
 
 <?php
     include("./bodyPage/FooterPages.php");

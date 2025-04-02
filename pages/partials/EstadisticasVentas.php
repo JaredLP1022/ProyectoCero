@@ -15,22 +15,24 @@ $stmt_productos = $PDO->prepare($query_productos);
 $stmt_productos->execute();
 $productos_filtro = $stmt_productos->fetchAll(PDO::FETCH_ASSOC);
 
-// Consulta base  
-$query = "SELECT detalle_producto, SUM(cantidad) as total_vendido, SUM(total) as ingresos_totales, SUM(descuento) as total_descuentos
-          FROM venta WHERE 1=1";  
+// Consulta base con JOIN para relacionar venta y producto
+$query = "SELECT v.detalle_producto, SUM(v.cantidad) as total_vendido, SUM(v.total) as ingresos_totales, SUM(v.descuento) as total_descuentos
+          FROM venta v
+          JOIN producto p ON v.detalle_producto = p.description
+          WHERE 1=1";  
 
 // Filtrar por mes, año y producto si están definidos  
 if ($mes) {  
-    $query .= " AND MONTH(fechaV) = :mes";  
+    $query .= " AND MONTH(v.fechaV) = :mes";  
 }  
 if ($anio) {  
-    $query .= " AND YEAR(fechaV) = :anio";  
+    $query .= " AND YEAR(v.fechaV) = :anio";  
 }  
 if ($producto_id) {  
-    $query .= " AND detalle_producto  = :producto_id";  
+    $query .= " AND p.id = :producto_id";  
 }  
 
-$query .= " GROUP BY detalle_producto ORDER BY total_vendido DESC";  
+$query .= " GROUP BY v.detalle_producto ORDER BY total_vendido DESC";  
 
 $stmt = $PDO->prepare($query);  
 
@@ -71,10 +73,21 @@ foreach ($ventas as $venta) {
     $ventas_descuentos[] = $venta['total_descuentos'];  // Almacenamos los descuentos en el array
 }  
 ?>   
+<style>
+    select, input[type="text"], input[type="date"], input[type="number"] {
+        background: transparent;
+        border: 2px solid white; /* Borde blanco */
+        color: white; /* Color del texto */
+        padding: 5px;
+        border-radius: 5px;
+    }
 
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">  
-
+    select option {
+        background: black; /* Fondo negro para opciones */
+        color: white;
+    }
+</style>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">  
 
 <div class="container my-3">  
     <h3 class="text-center fw-bold">Reporte de Ventas por Producto</h3>  
@@ -151,11 +164,10 @@ foreach ($ventas as $venta) {
 
 </div>
 
- 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>  
-    <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>  
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>  
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>  
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>  
+<script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>  
 <script>  
 document.getElementById("toggleStats").addEventListener("click", function() {
     var estadisticas = document.getElementById("estadisticas");
@@ -254,5 +266,4 @@ var graficoPastel = new Chart(ctxPastel, {
         }  
     }  
 });  
-  
 </script>

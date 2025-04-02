@@ -1,5 +1,24 @@
 <?php
 session_start();
+
+  // Establece el tiempo de inactividad máximo en segundos (20 minutos)
+  $tiempo_inactividad = 20 * 60;
+
+  // Verifica si la variable de sesión de la última actividad existe
+  if (isset($_SESSION['ultimoAcceso'])) {
+      $tiempo_transcurrido = time() - $_SESSION['ultimoAcceso'];
+
+      // Si el tiempo de inactividad es mayor al tiempo máximo, cierra la sesión
+      if ($tiempo_transcurrido > $tiempo_inactividad) {
+          session_unset();  // Elimina todas las variables de sesión
+          session_destroy(); // Destruye la sesión
+          header("Location: ../index.php"); // Redirige al login
+          exit();
+      }
+  }
+
+  // Actualiza la última actividad
+  $_SESSION['ultimoAcceso'] = time();
 ?>
 <!DOCTYPE html>
 <html lang="en">
