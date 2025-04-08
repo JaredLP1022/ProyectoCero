@@ -2,7 +2,7 @@
 include('partials/Head.php');
 if ($_SESSION['rol'] != 'Administrador') {
         // Si no es administrador, redirigir a una página de acceso denegado o a la página principal
-        header("Location: pages/access_denied.php"); // Puedes crear esta página si no la tienes
+        header("Location: pages/access_denied.php"); 
         exit;
     }
 ?>

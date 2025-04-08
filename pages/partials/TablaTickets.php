@@ -79,7 +79,8 @@ $problemas = $stmt_problemas->fetchAll(PDO::FETCH_ASSOC);
 <!-- Botón para agregar nuevo ticket -->
 <div class="container my-3">
     <button class="btn btn-success" onclick="location.href='nuevoTicket.php'">➕ Agregar Ticket</button>
-    <a href="reporteTickets.php" class="btn btn-info btn-sm">📄 Generar Reporte</a>
+    <a href="reporteTickets.php" class="btn btn-info btn-sm">📄 Generar Reporte por cleinte o problema</a>
+    <a href="reporteTicketsProducto.php" class="btn btn-info btn-sm">📄 Generar Reporte por producto</a>
 </div>
 
 <!-- Tabla de tickets -->

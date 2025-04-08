@@ -67,7 +67,7 @@ $result = $comando->fetchAll(PDO::FETCH_ASSOC);
                         <td><?php echo $row['cantidad'] ?></td>
                         <td><?php echo $row['precio'] ?></td>
                         <td><?php echo $row['total'] ?></td>
-                        <td><?php echo $row['estado'] ?></td>
+                        <td><?php echo $row['archivada'] ?></td>
                         <td><?php echo str_replace('-', '/', date('d-m-y', strtotime($row['fechaV']))) ?></td>
 
                         <td>

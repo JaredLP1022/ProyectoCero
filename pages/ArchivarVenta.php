@@ -10,7 +10,7 @@ $PDO = $pdo->conexion();
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
    
-     $comando = $PDO->query("UPDATE venta set estado = 'Inactivo',  archivada = 'Archivado'  WHERE id_venta = $id");
+     $comando = $PDO->query("UPDATE venta set archivada = 'Archivado'  WHERE id_venta = $id");
      $comando->execute();
 
     header("Location:ventas.php");

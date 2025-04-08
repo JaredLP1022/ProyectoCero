@@ -1,28 +1,29 @@
 <?php
 include("C:/xampp/htdocs/ProyectoCero/config/db.php");
 
-// Verificar si el parámetro ID está presente en la URL
-if (isset($_GET['id'])) {
-    $id_peticion = $_GET['id'];
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    $id_peticion = $_POST['id'];
 
     try {
         $pdo = new db();
         $PDO = $pdo->conexion();
 
-        // Consulta para eliminar la petición con el ID proporcionado
-        $sql = "DELETE  FROM peticiones WHERE id = :id_peticion";
+        $sql = "DELETE FROM peticiones WHERE id = :id_peticion";
         $stmt = $PDO->prepare($sql);
         $stmt->bindParam(':id_peticion', $id_peticion, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Redirigir de vuelta a la página de peticiones con un mensaje de éxito
-        header("Location: tabla_peticiones.php?success=Petición eliminada correctamente.");
+        if ($stmt->rowCount() > 0) {
+            echo json_encode(["success" => true]);
+        } else {
+            echo json_encode(["success" => false, "error" => "La petición no fue encontrada o ya fue eliminada."]);
+        }
     } catch (PDOException $e) {
-        // Si ocurre un error, redirigir con mensaje de error
-        header("Location: tabla_peticiones.php?error=Error al eliminar la petición. Intente nuevamente.");
+        echo json_encode(["success" => false, "error" => "Error de base de datos: " . $e->getMessage()]);
     }
 } else {
-    // Si no se pasa el ID, redirigir con mensaje de error
-    header("Location: tabla_peticiones.php?error=ID no válido.");
+    echo json_encode(["success" => false, "error" => "Solicitud inválida."]);
 }
 ?>

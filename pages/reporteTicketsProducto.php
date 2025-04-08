@@ -22,34 +22,22 @@ $stmtClientes = $PDO->prepare($queryClientes);
 $stmtClientes->execute();
 $clientes = $stmtClientes->fetchAll(PDO::FETCH_ASSOC);
 
-// Obtener tipos de problema
-$queryProblemas = "SELECT id_problema, descripcionProblem FROM problema";
-$stmtProblemas = $PDO->prepare($queryProblemas);
-$stmtProblemas->execute();
-$problemas = $stmtProblemas->fetchAll(PDO::FETCH_ASSOC);
+// Obtener productos distintos
+$queryProductos = "SELECT DISTINCT detalle_producto FROM venta";
+$stmtProductos = $PDO->prepare($queryProductos);
+$stmtProductos->execute();
+$productos = $stmtProductos->fetchAll(PDO::FETCH_ASSOC);
 
-// Manejar la búsqueda de tickets si se envió el formulario
+// Manejar la búsqueda
 $tickets = [];
 $cliente_nombre = "";
-$problema_descripcion = "";
+$producto_nombre = "";
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
     $cliente_id = $_POST['cliente_id'];
+    $producto_nombre = isset($_POST['producto']) ? $_POST['producto'] : "";
 
-    // Verificar si el campo 'problema_id' está presente en el POST
-    if (isset($_POST['problema_id']) && !empty($_POST['problema_id'])) {
-        $problema_id = $_POST['problema_id'];
-
-        // Obtener descripción del tipo de problema
-        $queryProblema = "SELECT descripcionProblem FROM problema WHERE id_problema = ?";
-        $stmtProblema = $PDO->prepare($queryProblema);
-        $stmtProblema->execute([$problema_id]);
-        $problema_descripcion = $stmtProblema->fetchColumn();
-    } else {
-        $problema_id = null;
-        $problema_descripcion = null;
-    }
-
-    // Si el cliente fue seleccionado, obtener su nombre
+    // Obtener nombre del cliente
     if (!empty($cliente_id)) {
         $queryCliente = "SELECT nombre FROM cliente WHERE id = ?";
         $stmtCliente = $PDO->prepare($queryCliente);
@@ -57,45 +45,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
         $cliente_nombre = $stmtCliente->fetchColumn();
     }
 
-    // Consulta para obtener los tickets filtrados por cliente y tipo de problema
-    $queryTickets = "SELECT t.id_ticket, v.detalle_producto, t.fecha, t.prioridad, t.estado, p.descripcionProblem AS descripcionProblema
+    // Consulta para obtener tickets filtrados por cliente y producto
+    $queryTickets = "SELECT t.id_ticket, v.detalle_producto, t.fecha, t.prioridad, t.estado
                      FROM ticket t
-                     JOIN venta v ON t.id_venta = v.id_venta
-                     LEFT JOIN problema p ON t.descripcionProblema = p.id_problema";
-    
-    // Si 'cliente_id' está especificado, agregar el filtro
+                     JOIN venta v ON t.id_venta = v.id_venta";
+
+    $condiciones = [];
+    $parametros = [];
+
     if (!empty($cliente_id)) {
-        $queryTickets .= " WHERE v.id_cliente = ?";
-        // Si también se seleccionó un tipo de problema, agregar el filtro
-        if (!empty($problema_id)) {
-            $queryTickets .= " AND t.descripcionProblema = ?";
-        }
-    } else {
-        // Si no se seleccionó cliente, solo filtrar por problema (si es necesario)
-        if (!empty($problema_id)) {
-            $queryTickets .= " WHERE t.descripcionProblema = ?";
-        }
+        $condiciones[] = "v.id_cliente = ?";
+        $parametros[] = $cliente_id;
+    }
+
+    if (!empty($producto_nombre)) {
+        $condiciones[] = "v.detalle_producto = ?";
+        $parametros[] = $producto_nombre;
+    }
+
+    if (!empty($condiciones)) {
+        $queryTickets .= " WHERE " . implode(" AND ", $condiciones);
     }
 
     $stmtTickets = $PDO->prepare($queryTickets);
-    if (!empty($cliente_id) && !empty($problema_id)) {
-        $stmtTickets->execute([$cliente_id, $problema_id]);
-    } elseif (!empty($cliente_id)) {
-        $stmtTickets->execute([$cliente_id]);
-    } elseif (!empty($problema_id)) {
-        $stmtTickets->execute([$problema_id]);
-    } else {
-        $stmtTickets->execute();
-    }
-
+    $stmtTickets->execute($parametros);
     $tickets = $stmtTickets->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HorizonTech</title>
 </head>
 <body>
@@ -113,13 +93,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
     </select>
     <br>
 
-    <label for="problema">Tipo de Problema:</label>
-    <select name="problema_id" id="problema" class="form-control">
-        <option value="">Selecciona un tipo de problema (opcional)</option>
-        <?php foreach ($problemas as $problema): ?>
-            <option value="<?php echo $problema['id_problema']; ?>" 
-                <?php echo (isset($_POST['problema_id']) && $_POST['problema_id'] == $problema['id_problema']) ? 'selected' : ''; ?>>
-                <?php echo htmlspecialchars($problema['descripcionProblem']); ?>
+    <label for="producto">Producto / Servicio:</label>
+    <select name="producto" id="producto" class="form-control">
+        <option value="">Selecciona un producto (opcional)</option>
+        <?php foreach ($productos as $producto): ?>
+            <option value="<?php echo htmlspecialchars($producto['detalle_producto']); ?>" 
+                <?php echo (isset($_POST['producto']) && $_POST['producto'] == $producto['detalle_producto']) ? 'selected' : ''; ?>>
+                <?php echo htmlspecialchars($producto['detalle_producto']); ?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -133,13 +113,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
 <?php if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])): ?>
     <?php if (!empty($tickets)): ?>
         <h3>Tickets <?php echo !empty($cliente_nombre) ? "del Cliente: " . htmlspecialchars($cliente_nombre) : ''; ?> 
-        <?php echo $problema_descripcion ? "- Tipo de Problema: " . htmlspecialchars($problema_descripcion) : ''; ?></h3>
+        <?php echo $producto_nombre ? "- Producto: " . htmlspecialchars($producto_nombre) : ''; ?></h3>
         <table class="table table-bordered border-white">
             <thead>
                 <tr>
                     <th>ID Ticket</th>
                     <th>Producto/Servicio</th>
-                    <th>Descripcion del problema</th>
                     <th>Fecha</th>
                     <th>Prioridad</th>
                     <th>Estado</th>
@@ -150,7 +129,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
                     <tr>
                         <td><?php echo htmlspecialchars($ticket['id_ticket']); ?></td>
                         <td><?php echo htmlspecialchars($ticket['detalle_producto']); ?></td>
-                        <td><?php echo htmlspecialchars($ticket['descripcionProblema']); ?></td>
                         <td><?php echo date("d/m/Y", strtotime($ticket['fecha'])); ?></td>
                         <td><?php echo htmlspecialchars($ticket['prioridad']); ?></td>
                         <td><?php echo htmlspecialchars($ticket['estado']); ?></td>
@@ -160,16 +138,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['buscar'])) {
         </table>
 
         <!-- BOTÓN PARA GENERAR REPORTE -->
-        <form action="exportarCSV.php" method="POST">
+        <form action="exportarCPCSV.php" method="POST">
             <input type="hidden" name="cliente_id" value="<?php echo htmlspecialchars($cliente_id); ?>">
             <input type="hidden" name="cliente_nombre" value="<?php echo htmlspecialchars($cliente_nombre); ?>">
-            <input type="hidden" name="problema_id" value="<?php echo htmlspecialchars($problema_id); ?>">
-            <input type="hidden" name="problema_descripcion" value="<?php echo htmlspecialchars($problema_descripcion); ?>">
+            <input type="hidden" name="producto" value="<?php echo htmlspecialchars($producto_nombre); ?>">
             <button type="submit" class="btn btn-success">📄 Generar Reporte</button>
         </form>
 
     <?php else: ?>
-        <p class="alert alert-warning">No hay tickets registrados para este cliente o tipo de problema.</p>
+        <p class="alert alert-warning">No hay tickets registrados para este cliente o producto.</p>
     <?php endif; ?>
 <?php endif; ?>
 </div>
